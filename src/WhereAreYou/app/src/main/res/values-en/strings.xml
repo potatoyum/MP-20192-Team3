@@ -8,8 +8,4 @@
     <string name="tab_text_5">Animal Tips</string>
     <string name="tab_text_6">Support</string>
     <string name="title_activity_pharmacy">Animal Pharmacy</string>
-    <string name="title_activity_shelter">Map</string>
-    <string name="title_activity_search">SearchAct</string>
-    <string name="title_activity_tips">TipsAct</string>
-    <string name="title_activity_support">SupportAct</string>
 </resources>

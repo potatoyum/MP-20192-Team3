@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">어디냥,멍!</string>
+    <string name="title_activity_hospital">HospitalAct</string>
+    <string name="tab_text_1">동물병원</string>
+    <string name="tab_text_2">동물약국</string>
+    <string name="tab_text_3">유기동물 보호소</string>
+    <string name="tab_text_4">유기동물</string>
+    <string name="tab_text_5">동물생활 꿀팁</string>
+    <string name="tab_text_6">후원</string>
+    <string name="title_activity_pharmacy">Animal Pharmacy</string>
+</resources>
