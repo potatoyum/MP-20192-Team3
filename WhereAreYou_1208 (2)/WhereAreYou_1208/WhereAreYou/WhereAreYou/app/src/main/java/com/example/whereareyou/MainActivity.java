@@ -88,10 +88,13 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, SearchAct.class);
                 startActivity(intent);
                 break;
+
+ */
             case R.id.tips:
                 intent = new Intent(MainActivity.this, TipsAct.class);
                 startActivity(intent);
-                break;*/
+                break;
+
             case R.id.support:
                 intent = new Intent(MainActivity.this, SupportAct.class);
                 startActivity(intent);

@@ -186,9 +186,6 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
             markerOptions.position(latLng);
             markerOptions.title(name.get(m).toString());
-                  //
-            //  .title(name.get(m).toString());
-            //markerOptions.snippet(markerSnippet);
 
             BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.host_marker);
             Bitmap b=bitmapdraw.getBitmap();
@@ -212,11 +209,6 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
                         infoview.setVisibility(View.VISIBLE);
                         TextView host_name = (TextView)findViewById(R.id.host_name);
                         TextView host_address = (TextView)findViewById(R.id.host_address);
-                        //Fragment fragment = new HosInfoFragment();
-                        //Bundle bundle = new Bundle(2);
-
-                        // bundle.putString("name",name.get(searchindex).toString());
-                        //bundle.putString("address", address.get(searchindex).toString());
 
                         host_name.setText(name.get(index).toString());
                         host_address.setText(address.get(index).toString());
@@ -446,16 +438,7 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
 
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-/*
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(currentLatLng);
-        markerOptions.title(markerTitle);
-        markerOptions.snippet(markerSnippet);
-        markerOptions.draggable(true);
 
-
-        currentMarker = mMap.addMarker(markerOptions);
-*/
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
 
@@ -475,14 +458,6 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
         if (currentMarker != null) currentMarker.remove();
 
-      /*  MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(DEFAULT_LOCATION);
-        markerOptions.title(markerTitle);
-        markerOptions.snippet(markerSnippet);
-        markerOptions.draggable(true);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        currentMarker = mMap.addMarker(markerOptions);
-*/
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
         mMap.moveCamera(cameraUpdate);
 

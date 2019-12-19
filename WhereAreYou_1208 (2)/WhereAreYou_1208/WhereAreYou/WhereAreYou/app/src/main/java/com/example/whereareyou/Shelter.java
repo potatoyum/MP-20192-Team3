@@ -619,7 +619,7 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
                 if (checkLocationServicesStatus()) {
                     if (checkLocationServicesStatus()) {
 
-                        Log.d(TAG, "onActivityResult : GPS 활성화 되있음");
+                        Log.d(TAG, "onActivityResult : GPS 활성화 되어있음");
 
 
                         needRequest = true;

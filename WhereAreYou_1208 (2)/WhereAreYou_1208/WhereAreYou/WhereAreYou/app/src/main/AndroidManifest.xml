@@ -16,6 +16,7 @@
         <activity android:name=".Hospital" />
         <activity android:name=".Shelter" />
         <activity android:name=".PharmacyAct" />
+        <activity android:name=".TipsAct" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
