@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="kindArr">
+        <item>품종</item>
+        <item>개</item>
+        <item>고양이</item>
+        <item>기타</item>
+    </string-array>
+    <string-array name="uprArr">
+        <item>지역</item>
+        <item>서울</item>
+        <item>부산</item>
+        <item>대구</item>
+    </string-array>
+</resources>
