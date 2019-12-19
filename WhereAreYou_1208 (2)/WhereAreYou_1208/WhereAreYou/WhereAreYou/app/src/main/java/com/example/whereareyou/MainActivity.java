@@ -84,12 +84,10 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, Shelter.class);
                 startActivity(intent);
                 break;
-/*            case R.id.search:
-                intent = new Intent(MainActivity.this, SearchAct.class);
+            case R.id.search:
+                intent = new Intent(MainActivity.this, MissingAnimalAct.class);
                 startActivity(intent);
                 break;
-
- */
             case R.id.tips:
                 intent = new Intent(MainActivity.this, TipsAct.class);
                 startActivity(intent);
