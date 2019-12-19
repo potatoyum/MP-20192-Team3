@@ -3,6 +3,8 @@ package com.example.whereareyou;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -79,7 +81,8 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
     Location mCurrentLocatiion;
     LatLng currentPosition;
 
-
+    View infoview;
+    int cameracount =0;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private Location location;
@@ -97,7 +100,7 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_pharmacy);
 
         mLayout = findViewById(R.id.layout_main);
-
+        infoview = findViewById(R.id.pha_info);
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL_MS)
@@ -181,11 +184,37 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
             markerOptions.position(latLng).title(name.get(m).toString());
             //markerOptions.snippet(markerSnippet);
+
+            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.pha_marker);
+            Bitmap b=bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b,100 , 100, false);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+
             googleMap.addMarker(markerOptions);
         }
 
         mMap.setOnMarkerClickListener(this);
 
+        mMap.setOnInfoWindowClickListener(
+                new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        int index = name.indexOf(marker.getTitle());
+
+                        int searchindex = name.indexOf(marker.getTitle());
+                        TextView phar_name = (TextView)findViewById(R.id.phar_name);
+                        TextView phar_call = (TextView)findViewById(R.id.phar_call);
+                        TextView phar_address = (TextView)findViewById(R.id.phar_address);
+
+                        phar_name.setText(name.get(searchindex).toString());
+                        phar_call.setText(call.get(searchindex).toString());
+                        phar_address.setText(address.get(searchindex).toString());
+
+                        infoview.setVisibility(View.VISIBLE);
+
+                    }
+                });
 
 
         //런타임 퍼미션 처리
@@ -243,7 +272,7 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
             @Override
             public void onMapClick(LatLng latLng) {
-
+                infoview.setVisibility(View.GONE);
                 Log.d( TAG, "onMapClick :");
             }
         });
@@ -379,8 +408,8 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
 
         if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
+           // Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "";
 
         } else {
             Address address = addresses.get(0);
@@ -399,7 +428,9 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
 
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
-
+        if(cameracount>0){
+            return;
+        }
 
         if (currentMarker != null) currentMarker.remove();
 
@@ -418,6 +449,7 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
 
+        cameracount++;
     }
 
 
@@ -425,9 +457,9 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
 
         //디폴트 위치, Seoul
-        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
+        LatLng DEFAULT_LOCATION = new LatLng(35.890044, 128.611336);
         String markerTitle = "위치정보 가져올 수 없음";
-        String markerSnippet = "위치 퍼미션과 GPS 활성 요부 확인하세요";
+        String markerSnippet = "위치 퍼미션과 GPS 활성 여부 확인하세요";
 
 
         if (currentMarker != null) currentMarker.remove();
@@ -588,7 +620,10 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(marker.getPosition());
+        mMap.animateCamera(center);
 
         try {
             URLEncoder.encode(marker.getTitle(),"UTF-8");
@@ -596,16 +631,9 @@ public class PharmacyAct extends AppCompatActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
 
-        int searchindex = name.indexOf(marker.getTitle());
-        TextView phar_name = (TextView)findViewById(R.id.phar_name);
-        TextView phar_call = (TextView)findViewById(R.id.phar_call);
-        TextView phar_address = (TextView)findViewById(R.id.phar_address);
-
-        phar_name.setText(name.get(searchindex).toString());
-        phar_call.setText(call.get(searchindex).toString());
-        phar_address.setText(address.get(searchindex).toString());
+        marker.showInfoWindow();
 
 
         return true;

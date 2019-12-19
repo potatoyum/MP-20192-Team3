@@ -10,7 +10,7 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"
+        android:layout_weight="8"
         android:id="@+id/map"
         tools:context=".MapActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment"></fragment>
@@ -18,22 +18,25 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="2"
+        android:id="@+id/pha_info"
+        android:background="@drawable/info_back"
+        android:visibility="gone">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="약국명: "/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/phar_name"
-                android:hint="약국이름"/>
+                android:hint="약국이름"
+                android:textSize="25sp"
+                android:padding="16dp"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
         </TableRow>
 
@@ -42,15 +45,24 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="주소: "/>
+                android:textSize="18sp"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+
+                android:text="주소 "/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/phar_address"
-                android:hint="약국주소"/>
+                android:hint="약국주소"
+                android:layout_weight="2"
+                android:textSize="18sp"
+                android:paddingLeft="16dp"/>
 
         </TableRow>
 
@@ -59,15 +71,23 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="전화번호: "/>
+                android:textSize="18sp"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:text="전화번호 "/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/phar_call"
-                android:hint="약국전화번호"/>
+                android:hint="약국전화번호"
+                android:layout_weight="2"
+                android:textSize="18sp"
+                android:paddingLeft="16dp"/>
 
         </TableRow>
     </TableLayout>

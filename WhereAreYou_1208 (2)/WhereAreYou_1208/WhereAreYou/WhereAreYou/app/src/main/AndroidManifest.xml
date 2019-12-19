@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Hospital"></activity>
+        <activity android:name=".SupportAct"></activity>
+        <activity android:name=".Hospital" />
         <activity android:name=".Shelter" />
         <activity android:name=".PharmacyAct" />
 

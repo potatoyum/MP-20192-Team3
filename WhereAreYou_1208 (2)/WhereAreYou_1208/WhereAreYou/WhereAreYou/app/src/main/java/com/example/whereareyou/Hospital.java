@@ -3,12 +3,15 @@ package com.example.whereareyou;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -83,12 +86,13 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
     Location mCurrentLocatiion;
     LatLng currentPosition;
 
+    View infoview;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private Location location;
 
-
+    int cameracount =0;
     private View mLayout;  // Snackbar 사용하기 위해서는 View가 필요합니다.
     // (참고로 Toast에서는 Context가 필요했습니다.)
 
@@ -100,7 +104,7 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
         setContentView(R.layout.activity_hospital2);
 
         mLayout = findViewById(R.id.layout_main);
-
+        infoview= findViewById(R.id.host_info);
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL_MS)
@@ -180,8 +184,18 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
             LatLng latLng = new LatLng(l1,l2);
             //String markerSnippet = getCurrentAddress(latLng);
 
-            markerOptions.position(latLng).title(name.get(m).toString());
+            markerOptions.position(latLng);
+            markerOptions.title(name.get(m).toString());
+                  //
+            //  .title(name.get(m).toString());
             //markerOptions.snippet(markerSnippet);
+
+            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.host_marker);
+            Bitmap b=bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b,100 , 100, false);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+
             googleMap.addMarker(markerOptions);
 
 
@@ -189,11 +203,29 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(this);
 
+        mMap.setOnInfoWindowClickListener(
+                new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        int index = name.indexOf(marker.getTitle());
+
+                        infoview.setVisibility(View.VISIBLE);
+                        TextView host_name = (TextView)findViewById(R.id.host_name);
+                        TextView host_address = (TextView)findViewById(R.id.host_address);
+                        //Fragment fragment = new HosInfoFragment();
+                        //Bundle bundle = new Bundle(2);
+
+                        // bundle.putString("name",name.get(searchindex).toString());
+                        //bundle.putString("address", address.get(searchindex).toString());
+
+                        host_name.setText(name.get(index).toString());
+                        host_address.setText(address.get(index).toString());
+                    }
+                });
 
 
-
-        //런타임 퍼미션 처리
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
+                //런타임 퍼미션 처리
+                // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
         int hasFineLocationPermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this,
@@ -248,6 +280,7 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
             @Override
             public void onMapClick(LatLng latLng) {
 
+                infoview.setVisibility(View.GONE);
                 Log.d( TAG, "onMapClick :");
             }
         });
@@ -383,8 +416,8 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
 
         if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
+            //Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "";
 
         } else {
             Address address = addresses.get(0);
@@ -405,11 +438,15 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
 
 
+        if(cameracount>0){
+            return;
+        }
+
         if (currentMarker != null) currentMarker.remove();
 
 
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
+/*
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLatLng);
         markerOptions.title(markerTitle);
@@ -418,9 +455,11 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
 
         currentMarker = mMap.addMarker(markerOptions);
-
+*/
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
+
+        cameracount++;
 
     }
 
@@ -429,21 +468,21 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
 
         //디폴트 위치, Seoul
-        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
+        LatLng DEFAULT_LOCATION = new LatLng(35.890044, 128.611336);
         String markerTitle = "위치정보 가져올 수 없음";
-        String markerSnippet = "위치 퍼미션과 GPS 활성 요부 확인하세요";
+        String markerSnippet = "위치 퍼미션과 GPS 활성 여부 확인하세요";
 
 
         if (currentMarker != null) currentMarker.remove();
 
-        MarkerOptions markerOptions = new MarkerOptions();
+      /*  MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(DEFAULT_LOCATION);
         markerOptions.title(markerTitle);
         markerOptions.snippet(markerSnippet);
         markerOptions.draggable(true);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = mMap.addMarker(markerOptions);
-
+*/
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
         mMap.moveCamera(cameraUpdate);
 
@@ -592,15 +631,12 @@ public class Hospital extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,marker.getTitle(), Toast.LENGTH_SHORT).show();
-        int searchindex = name.indexOf(marker.getTitle());
-        TextView host_name = (TextView)findViewById(R.id.host_name);
-        TextView host_address = (TextView)findViewById(R.id.host_address);
+        //Toast.makeText(this,marker.getTitle(), Toast.LENGTH_SHORT).show();
 
-        host_name.setText(name.get(searchindex).toString());
-        host_address.setText(address.get(searchindex).toString());
+        CameraUpdate center = CameraUpdateFactory.newLatLng(marker.getPosition());
+        mMap.animateCamera(center);
 
-
+        marker.showInfoWindow();
         return true;
     }
 

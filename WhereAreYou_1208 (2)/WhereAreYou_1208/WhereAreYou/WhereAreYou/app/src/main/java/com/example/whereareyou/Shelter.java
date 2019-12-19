@@ -3,6 +3,8 @@ package com.example.whereareyou;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -83,7 +85,7 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     boolean needRequest = false;
 
-
+    View infoview;
     // 앱을 실행하기 위해 필요한 퍼미션을 정의합니다.
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};  // 외부 저장소
 
@@ -96,7 +98,7 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
     private LocationRequest locationRequest;
     private Location location;
 
-
+    int cameracount =0;
     private View mLayout;  // Snackbar 사용하기 위해서는 View가 필요합니다.
     // (참고로 Toast에서는 Context가 필요했습니다.)
 
@@ -108,7 +110,7 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_shelter2);
         mLayout = findViewById(R.id.layout_main);
-
+        infoview= findViewById(R.id.shel_info);
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL_MS)
@@ -194,11 +196,38 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
             markerOptions.position(latLng).title(name.get(m).toString());
             //markerOptions.snippet(markerSnippet);
+
+            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.shelter_marker);
+            Bitmap b=bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b,100 , 100, false);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
             googleMap.addMarker(markerOptions);
         }
 
         mMap.setOnMarkerClickListener(this);
 
+        mMap.setOnInfoWindowClickListener(
+                new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        int index = name.indexOf(marker.getTitle());
+
+                        infoview.setVisibility(View.VISIBLE);
+                        int searchindex = name.indexOf(marker.getTitle());
+                        TextView phar_name = (TextView)findViewById(R.id.phar_name);
+                        TextView phar_call = (TextView)findViewById(R.id.phar_call);
+                        TextView phar_address = (TextView)findViewById(R.id.phar_address);
+                        TextView phar_type = (TextView) findViewById(R.id.phar_type);
+                        TextView phar_holiday = (TextView) findViewById(R.id.phar_holiday);
+
+                        phar_name.setText(name.get(searchindex).toString());
+                        phar_call.setText(call.get(searchindex).toString());
+                        phar_address.setText(address.get(searchindex).toString());
+                        phar_type.setText(type.get(searchindex).toString());
+                        phar_holiday.setText(holiday.get(searchindex).toString());
+                    }
+                });
 
 
         //런타임 퍼미션 처리
@@ -251,12 +280,12 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
 
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
-
+                infoview.setVisibility(View.GONE);
                 Log.d( TAG, "onMapClick :");
             }
         });
@@ -392,8 +421,8 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
 
         if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
+            //Toast.makeText(this, "", Toast.LENGTH_LONG).show();
+            return "";
 
         } else {
             Address address = addresses.get(0);
@@ -413,13 +442,16 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
 
+        if(cameracount>0){
+            return;
+        }
 
         if (currentMarker != null) currentMarker.remove();
 
 
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        MarkerOptions markerOptions = new MarkerOptions();
+      /*  MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(currentLatLng);
         markerOptions.title(markerTitle);
         markerOptions.snippet(markerSnippet);
@@ -427,10 +459,11 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
 
         currentMarker = mMap.addMarker(markerOptions);
-
+*/
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
 
+        cameracount++;
     }
 
 
@@ -438,22 +471,22 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
 
         //디폴트 위치, Seoul
-        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
+        LatLng DEFAULT_LOCATION = new LatLng(35.890044, 128.611336);
         String markerTitle = "위치정보 가져올 수 없음";
-        String markerSnippet = "위치 퍼미션과 GPS 활성 요부 확인하세요";
+        String markerSnippet = "위치 퍼미션과 GPS 활성 여부 확인하세요";
 
 
         if (currentMarker != null) currentMarker.remove();
 
-        MarkerOptions markerOptions = new MarkerOptions();
+      /*  MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(DEFAULT_LOCATION);
         markerOptions.title(markerTitle);
         markerOptions.snippet(markerSnippet);
         markerOptions.draggable(true);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = mMap.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
+*/
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 10);
         mMap.moveCamera(cameraUpdate);
 
     }
@@ -601,7 +634,7 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
 
         try {
             URLEncoder.encode(marker.getTitle(),"UTF-8");
@@ -609,22 +642,14 @@ public class Shelter extends AppCompatActivity implements OnMapReadyCallback,
             e.printStackTrace();
         }
 
-        Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
-
-        int searchindex = name.indexOf(marker.getTitle());
-        TextView phar_name = (TextView)findViewById(R.id.phar_name);
-        TextView phar_call = (TextView)findViewById(R.id.phar_call);
-        TextView phar_address = (TextView)findViewById(R.id.phar_address);
-        TextView phar_type = (TextView) findViewById(R.id.phar_type);
-        TextView phar_holiday = (TextView) findViewById(R.id.phar_holiday);
-
-        phar_name.setText(name.get(searchindex).toString());
-        phar_call.setText(call.get(searchindex).toString());
-        phar_address.setText(address.get(searchindex).toString());
-        phar_type.setText(type.get(searchindex).toString());
-        phar_holiday.setText(holiday.get(searchindex).toString());
+     //   Toast.makeText(this,marker.getTitle()+ "\n" + marker.getPosition(), Toast.LENGTH_SHORT).show();
 
 
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(marker.getPosition());
+        mMap.animateCamera(center);
+
+        marker.showInfoWindow();
 //        Fragment fragment = new PharmacyFragment();
 //        Bundle args = new Bundle();
 //        args.putString("Title",marker.getTitle());
