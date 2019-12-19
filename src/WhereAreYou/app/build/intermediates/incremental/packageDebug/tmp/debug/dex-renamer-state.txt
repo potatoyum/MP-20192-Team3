@@ -1,7 +1,0 @@
-#Tue Nov 26 21:32:58 KST 2019
-base.0=C\:\\Users\\hello\\Documents\\GitHub\\MP-20192-Team3\\src\\WhereAreYou\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
-path.1=classes.dex
-renamed.1=classes2.dex
-path.0=classes.dex
-renamed.0=classes.dex
-base.1=C\:\\Users\\hello\\Documents\\GitHub\\MP-20192-Team3\\src\\WhereAreYou\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
