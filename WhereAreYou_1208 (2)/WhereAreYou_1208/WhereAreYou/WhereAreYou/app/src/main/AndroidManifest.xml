@@ -17,6 +17,7 @@
         <activity android:name=".Shelter" />
         <activity android:name=".PharmacyAct" />
         <activity android:name=".TipsAct" />
+        <activity android:name=".MissingAnimalAct"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
