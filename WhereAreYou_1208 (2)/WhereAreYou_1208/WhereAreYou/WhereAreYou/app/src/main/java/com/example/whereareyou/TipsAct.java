@@ -34,7 +34,7 @@ public class TipsAct extends AppCompatActivity {
         aryList.add(" 위로의 말을 건네기보단, 평소와 다름없이 침착하고 자연스럽게 행동하세요.");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
-                R.layout.item,
+                R.layout.items,
                 R.id.name,
                 aryList
         );
