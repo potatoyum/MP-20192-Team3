@@ -34,11 +34,6 @@ public class MissingAnimalAct extends AppCompatActivity {
     String key = "Mmd3eUQllVHsDt943TR9yC6aDJ2%2BiG1NII6tH6y6Cyha%2BTuiwgalo7aFVS8i5JoNLnPTAkZV4TDWj6PqD4Ysjg%3D%3D";
     GridView gridView;
     MissingAdapter mAdapter;
-    //ArrayList<MissingItem> result;
-    TextView bgnde, endde;
-    XmlPullParser xpp;
-    TextView text;
-    String data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,30 +151,14 @@ public class MissingAnimalAct extends AppCompatActivity {
                                     + "\n발견장소 " + happenPlace + "\n성별 " + sexCd + "\n색상 " + colorCd
                                     + "\n상태 " + procStat;
                             mAdapter.addItem(new MissingItem(popFile, str));
-                            //status1.setText(status1.getText() + str);
                         }
                         break;
                 }
                 parserEvent = parser.next();
             }
-
-            //recyclerView.setAdapter(new RecyclerAdapter(getApplicationContext(), items, R.layout.activity_missing_animal));
-            //recyclerView.setLayoutManager(layoutManager);
         } catch (Exception e) {
             //status1.setText(e.toString());
         }
-
-        /*StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .permitDiskReads()
-                .permitDiskWrites()
-                .permitNetwork().build());*/
-
-        //result = parsing(start, end, null, null);
-
-        /*for (int i = 0; i < result.size(); i++) {
-            mAdapter.addItem(result.get(i));
-        }*/
-
         gridView.setAdapter(mAdapter);
     }
 
@@ -219,129 +198,6 @@ public class MissingAnimalAct extends AppCompatActivity {
             }
         }).start();
     }*/
-
-    public String parsing(String start, String end) {
-        StringBuffer buffer = new StringBuffer();
-
-        String urlStr = "http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?"
-                + "bgnde=" + start + "&endde=" + end;
-
-        /*System.out.println(start + " " + end + " " + kind + " " + upr);
-
-        if (kind != null) {
-            if (kind.equals("개")) {
-                urlStr = urlStr.concat("&kind=417000");
-            } else if (kind.equals("고양이")) {
-                urlStr = urlStr.concat("&kind=422400");
-            } else if (kind.equals("기타")) {
-                urlStr = urlStr.concat("&kind=429900");
-            }
-        }
-
-        System.out.println(urlStr);
-
-        if (upr != null) {
-            if (upr.equals("서울")) {
-                urlStr = urlStr + "&upr_cd=6110000";
-            } else if (upr.equals("부산")) {
-                urlStr = urlStr + "&upr_cd=6260000";
-            } else if (upr.equals("대구")) {
-                urlStr = urlStr + "&upr_cd=6270000";
-            }
-        }*/
-
-        System.out.println(urlStr);
-
-        urlStr = urlStr + "&state=notice&pageNo=1&numOfRows=50&ServiceKey=" + key;
-
-        try {
-            URL url = new URL(urlStr);
-            InputStream is = url.openStream();
-
-            XmlPullParserFactory factory= XmlPullParserFactory.newInstance();
-            XmlPullParser xpp= factory.newPullParser();
-            xpp.setInput( new InputStreamReader(is, "UTF-8") ); //inputstream 으로부터 xml 입력받기
-
-            String tag;
-
-            xpp.next();
-            int eventType = xpp.getEventType();
-
-            while( eventType != XmlPullParser.END_DOCUMENT ){
-                switch( eventType ){
-                    case XmlPullParser.START_DOCUMENT:
-                        buffer.append("파싱 시작...\n\n");
-                        break;
-
-                    case XmlPullParser.START_TAG:
-                        tag= xpp.getName();//테그 이름 얻어오기
-
-                        if(tag.equals("item")) ;// 첫번째 검색결과
-                        else if(tag.equals("kindCd")){
-                            buffer.append("품종 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//title 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n"); //줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("sexCd")){
-                            buffer.append("성별 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//category 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n");//줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("popfile")){
-                            buffer.append("Image ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//description 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n");//줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("processState")){
-                            buffer.append("상태 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//telephone 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n");//줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("colorCd")){
-                            buffer.append("색상 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//address 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n");//줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("noticeNo")){
-                            buffer.append("공고번호 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//mapx 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("  ,  "); //줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("happenDt")){
-                            buffer.append("접수일 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//mapy 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n"); //줄바꿈 문자 추가
-                        }
-                        else if(tag.equals("happenPlace")){
-                            buffer.append("발견장소 ");
-                            xpp.next();
-                            buffer.append(xpp.getText());//mapy 요소의 TEXT 읽어와서 문자열버퍼에 추가
-                            buffer.append("\n"); //줄바꿈 문자 추가
-                        }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        tag= xpp.getName(); //테그 이름 얻어오기
-
-                        if(tag.equals("item")) buffer.append("\n");// 첫번째 검색결과종료..줄바꿈
-                        break;
-                }
-
-                eventType= xpp.next();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        buffer.append("파싱 끝\n");
-        return buffer.toString();//StringBuffer 문자열 객체 반환
-    }
 
 /*    public ArrayList<MissingItem> parsing(String start, String end, String upr, String kind) {
         ArrayList<MissingItem> arrayList = new ArrayList<>();
